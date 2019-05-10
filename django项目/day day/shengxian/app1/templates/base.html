@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}标题{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}">
+	<link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+	<script type="text/javascript" src="{% static 'js/jquery-1.12.4.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/jquery-ui.min.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/slide.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/jquery-3.3.1.js' %}"></script>
+	<script type="text/javascript" src="{% static 'js/jquery.cookie.js' %}"></script>
+</head>
+<body>
+
+	<div class="header_con">
+		<div class="header">
+			<div class="welcome fl">欢迎来到天天生鲜!</div>
+			<div class="fr">
+                {% if user.is_authenticated %}
+				    <div class="login_info fl">
+					    欢迎您：<em>{{ user.username }}</em>
+                        <a href="{% url 'logout' %}">退出</a>
+				    </div>
+                {% else %}
+				    <div class="login_btn fl">
+					    <a href="{% url 'login' %}">登录</a>
+					    <span>|</span>
+					    <a href="{% url 'register' %}">注册</a>
+				    </div>
+                {% endif %}
+				<div class="user_link fl">
+					<span>|</span>
+					<a href="{% url 'user_center_info' %}">用户中心</a>
+					<span>|</span>
+					<a href="{% url 'cart' %}">我的购物车</a>
+					<span>|</span>
+					<a href="{% url 'user_center_order' %}">我的订单</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="search_bar clearfix">
+		{% for i in logo %}
+		<a href="{% url 'index' %}" class="logo fl"><img src="{{ MEDIA_URL }}{{ i.img }}"></a>
+		{% endfor %}
+		<div class="search_con fl">
+			<form action="{% url 'search' %}">
+			<input type="text" class="input_text fl" name="keywords" placeholder="搜索商品">
+			<input type="submit" class="input_btn fr" name="" value="搜索">
+			</form>
+		</div>
+		<div class="guest_cart fr">
+			<a href="{% url 'cart' %}" class="cart_name fl">我的购物车</a>
+			<div class="goods_count fl" id="show_count">{{ gwc }}</div>
+		</div>
+	</div>
+
+
+
+{% block main %}
+{% endblock%}
+	<div class="footer">
+		<div class="foot_link">
+			<a href="#">关于我们</a>
+			<span>|</span>
+			<a href="#">联系我们</a>
+			<span>|</span>
+			<a href="#">招聘人才</a>
+			<span>|</span>
+			<a href="#">友情链接</a>
+		</div>
+		<p>CopyRight © 2016 北京天天生鲜信息技术有限公司 All Rights Reserved</p>
+		<p>电话：010-****888    京ICP备*******8号</p>
+	</div>
+	<!--<script type="text/javascript" src="js/slideshow.js"></script>-->
+	<!--<script type="text/javascript">-->
+		<!--BCSlideshow('focuspic');-->
+		<!--var oFruit = document.getElementById('fruit_more');-->
+		<!--var oShownum = document.getElementById('show_count');-->
+
+		<!--var hasorder = localStorage.getItem('order_finish');-->
+
+		<!--if(hasorder)-->
+		<!--{-->
+			<!--oShownum.innerHTML = '2';-->
+		<!--}-->
+
+		<!--oFruit.onclick = function(){-->
+			<!--window.location.href = 'list.html';-->
+		<!--}-->
+	<!--</script>-->
+	<script>
+	$('.input_btn').click(function(){
+		$(location).attr('href','http://127.0.0.1:8000/app1/search/?krywords=' +$('.input_text').val())
+	})
+	{% if messages %}
+	{% for msg in messages %}
+		alert('{{ msg.message }}');
+	{% endfor %}
+	{% endif %}
+	</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

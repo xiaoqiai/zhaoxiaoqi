@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% load static  category %}
+
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>{% block title %}天天生鲜-商品详情{% endblock %}</title>
+
+{% block main %}
+
+	<div class="navbar_con">
+		<div class="navbar clearfix">
+			<div class="subnav_con fl">
+				<h1>全部商品分类</h1>	
+				<span></span>			
+				<ul class="subnav">
+					{% get_categories as categories %}
+					    <!--get_categories在category.py中，给她起个别名-->
+					{% for category in categories %}
+						<li><a href="{% url 'list' category.id %}"
+							class="{{ category.img }}">{{ category.name }}</a></li>
+					{% endfor %}
+				</ul>
+			</div>
+			<ul class="navlist fl">
+				<li><a href="{% url 'index' %}">首页</a></li>
+				<li class="interval">|</li>
+				<li><a href="">手机生鲜</a></li>
+				<li class="interval">|</li>
+				<li><a href="">抽奖</a></li>
+			</ul>
+		</div>
+	</div>
+
+	<div class="breadcrumb">
+		<a href="#">全部分类</a>
+		<span>></span>
+		<a href="#">新鲜水果</a>
+		<span>></span>
+		<a href="#">商品详情</a>
+	</div>
+
+	<div class="goods_detail_con clearfix">
+		<div class="goods_detail_pic fl"><img style="height:100%;width:100%;" src="{{ MEDIA_URL }}{{ q.img }}"></div>
+
+		<div class="goods_detail_list fr">
+			<h3>{{ q.name }}</h3>
+			<p>草莓浆果柔软多汁，味美爽口，适合速冻保鲜贮藏。草莓速冻后，可以保持原有的色、香、味，既便于贮藏，又便于外销。</p>
+			<div class="prize_bar">
+				<span class="show_pirze">¥<em id="danjia">{{ q.price1 }}元</em></span>
+				<span class="show_unit">单  位：500g</span>
+			</div>
+			<div class="goods_num clearfix">
+				<div class="num_name fl">数 量：</div>
+				<div class="num_add fl">
+					<input type="text" class="num_show fl" value="1" id="shuliang">
+					<a href="javascript:;" class="add fr" id="jiahao">+</a>
+					<a href="javascript:;" class="minus fr" id="jianhao">-</a>
+				</div> 
+			</div>
+			<div class="total">总价：<em id="zongjia">{{ q.price1 }}元</em></div>
+			<div class="operate_btn">
+				<a href="javascript:;" class="buy_btn">立即购买</a>
+				<a href="{% url 'adds' q.id %}" class="add_cart" id="add_cart">加入购物车</a>
+			</div>
+		</div>
+	</div>
+
+	<div class="main_wrap clearfix">
+		<div class="l_wrap fl clearfix">
+			<div class="new_goods">
+				<h3>新品推荐</h3>
+				<ul>
+					{% for i in alls|slice:':2' %}
+					<li>
+						<a href="#"><img src="{{ MEDIA_URL }}{{ i.img }}"></a>
+						<h4><a href="#">{{ i.name }}</a></h4>
+						<div class="prize">￥{{ i.price1 }}</div>
+					</li>
+					<!--<li>-->
+						<!--<a href="#"><img src="{% static 'images/goods/goods002.jpg' %}"></a>-->
+						<!--<h4><a href="#">玫瑰香葡萄</a></h4>-->
+						<!--<div class="prize">￥16.80</div>-->
+					<!--</li>-->
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+
+		<div class="r_wrap fr clearfix">
+			<ul class="detail_tab clearfix">
+				<li class="active">商品介绍</li>
+				<li>评论</li>
+			</ul>
+
+			<div class="tab_content">
+				<dl>
+					<dt>商品详情：</dt>
+					<dd>草莓采摘园位于北京大兴区 庞各庄镇四各庄村 ，每年1月-6月面向北京以及周围城市提供新鲜草莓采摘和精品礼盒装草莓，草莓品种多样丰富，个大香甜。所有草莓均严格按照有机标准培育，不使用任何化肥和农药。草莓在采摘期间免洗可以直接食用。欢迎喜欢草莓的市民前来采摘，也欢迎各大单位选购精品有机草莓礼盒，有机草莓礼盒是亲朋馈赠、福利送礼的最佳选择。 </dd>
+				</dl>
+			</div>
+
+		</div>
+	</div>
+
+	<div class="add_jump"></div>
+
+	<script type="text/javascript" src="js/jquery-1.12.2.js"></script>
+	<script type="text/javascript">
+		$('#jiahao').click(function() {
+			var num = $('#shuliang').val();
+			if($('#shuliang').val() <992 )
+			{
+				$('#shuliang').val(function () {
+					return num*1 +1;
+				});
+			}
+		var num1 = parseInt($('#shuliang').val());
+		var num2 = parseInt($('#danjia').html());
+		$('#zongjia').html(function() {
+			return(((num1*100)*(num2*100)/10000).toFixed(2));    /* toFixed(n)  四舍五入小数点后n位*/
+
+			});
+		});
+		$('#jianhao').mousedown(function () {
+			var num = $('#shuliang').val();
+			if ($('#shuliang').val() > 1)
+			{
+				$('#shuliang').val(function () {
+					return num * 1 - 1;
+				});
+			}
+			var num1 = parseInt($('#shuliang').val());
+			var num2 = parseInt($('#danjia').html());
+			$('#zongjia').html(function() {
+				return(((num1*100)*(num2*100)/10000).toFixed(2));
+			});
+		});
+
+		$('.buy_btn').click(function (){
+			let data=[{{q.id}},$('#shuliang').val(),$('#zongjia').html()];
+			$(this).attr('href','/app1/place_order_1/?ids=' +JSON.stringify(data));
+		})
+	</script>
+	
+{% endblock %}

@@ -1,0 +1,141 @@
+{% extends 'base2.html' %}
+{% load static %}
+
+	{% block title %}天天生鲜-提交订单(结算){% endblock %}
+
+{% block main %}
+
+	
+	<h3 class="common_title">确认收货地址</h3>
+
+	<div class="common_list_con clearfix">
+		<dl>
+			<dt>寄送到：</dt>
+			<dd><input type="radio" name="" checked="">
+			{% if a %}
+				<select name="" id="" style="font-size:16px">
+					{% for i in a %}
+						<option value="">
+							{{ i.address }} | {{ i.name }} | {{ i.tel }}
+						</option>
+					{% endfor %}
+				</select>
+			{% endif %}
+
+
+
+
+
+			</dd>
+		</dl>
+		<a href="{% url 'addr' %}" class="edit_site">编辑收货地址</a>
+
+	</div>
+	
+	<h3 class="common_title">支付方式</h3>	
+	<div class="common_list_con clearfix">
+		<div class="pay_style_con clearfix">
+			<input type="radio" name="pay_style" checked>
+			<label class="cash">货到付款</label>
+			<input type="radio" name="pay_style">
+			<label class="weixin">微信支付</label>
+			<input type="radio" name="pay_style">
+			<label class="zhifubao"></label>
+			<input type="radio" name="pay_style">
+			<label class="bank">银行卡支付</label>
+		</div>
+	</div>
+
+	<h3 class="common_title">商品列表</h3>
+	
+	<div class="common_list_con clearfix">
+		<ul class="goods_list_th clearfix" >
+			<li class="col011" style="margin-left:130px;">商品名称</li>
+			<li class="col02" style="margin-left:120px;">商品单位</li>
+			<li class="col03">数量</li>
+			<li class="col04">商品价格</li>
+			<li class="col05">小计</li>		
+		</ul>
+        {% if order %}
+		{% for i in order %}
+		<ul class="goods_list_td clearfix">
+			<li class="col01" data-id="{{ i.goods.id }}">{{ forloop.counter }}</li>
+			<li class="col02"><img src="{{ MEDIA_URL }}{{ i.goods.img }}"></li>
+			<li class="col03">{{ i.goods.name }}</li>
+			<li class="col04">500g</li>
+			<li class="col05" value="{{ i.id }}">{{ i.count }}</li>
+			<li class="col06" id="num_show fl" data-id="{{ i.id }}">{{ i.goods.price1 }}</li>
+			<li class="col07">元</li>
+		</ul>
+		<input type="hidden" value="{{ i.id }}" id="haha">
+		{% endfor %}
+        {% else %}
+        <ul class="goods_list_td clearfix">
+			<li class="col01" data-id="{{ goods.id }}">{{ forloop.counter }}</li>
+			<li class="col02"><img src="{{ MEDIA_URL }}{{ goods.img }}"></li>
+			<li class="col03">{{ goods.name }}</li>
+			<li class="col04">500g</li>
+			<li class="col05" value="{{ i.id }}">{{ count }}</li>
+			<li class="col06" id="um_show fl" data-id="{{ goods.id }}">{{ goods.price1 }}</li>
+			<li class="col07">元</li>
+		</ul>
+        {% endif %}
+
+	</div>
+
+	<h3 class="common_title">总金额结算</h3>
+
+	<div class="common_list_con clearfix">
+		<div class="settle_con">
+			<div class="total_goods_count">共<em>{{ num }}</em>件商品，总金额<b id="totle" class="non">元</b></div>
+			<div class="transit">运费：<b>10元</b></div>
+			<div class="total_pay">实付款：<b class="tot">52.60元</b></div>
+		</div>
+	</div>
+
+	<div class="order_submit clearfix">
+		<a href="javascript:;" id="order_btn">提交订单</a>
+	</div>
+
+<script src="{% static 'js/jquery-1.12.4.min.js' %}"></script>
+<script>
+
+	// 计算总计
+	$('.col07').change(function() {
+			// 获取商品单价
+			price = parseFloat($(this).prev().prev().text()) * 100
+			// 计算小计
+			price = price * $(this).prev().text()
+			// 获取小计的元素并赋值
+			$(this).text((price/100).toFixed(2) + '元')
+
+
+			<!--计算总价格-->
+			var total = 0
+			$('.col07').each(function(i,el){
+			total += parseFloat($(el).text()) * 100
+			})
+			$('.non').text((total/100).toFixed(2))
+			$('.tot').text(((total/100)+ 10).toFixed(2))
+		})
+
+
+			$('ul').ready(function(){
+				$('.col07').change()
+			})
+
+
+
+			  // 点击结算按钮进行结算请求
+		$('#order_btn').click(function () {
+			let data = [];
+			$('.col01').each(function (i, el) {
+				data.push($(el).attr('data-id'));
+			});
+
+			$(this).attr('href', '/app1/order/?order=' + JSON.stringify(data));
+		})
+
+</script>
+
+{% endblock %}

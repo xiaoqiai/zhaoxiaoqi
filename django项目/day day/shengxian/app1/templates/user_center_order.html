@@ -1,0 +1,71 @@
+{% extends 'base2.html' %}
+{% load static %}
+
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+	<title>{% block title %}天天生鲜-用户中心(我的订单){% endblock %}</title>
+
+{% block main %}
+
+	<div class="main_con clearfix">
+		<div class="left_menu_con clearfix">
+			<h3>用户中心</h3>
+			<ul>
+				<li><a href="{% url 'user_center_info' %}">· 个人信息</a></li>
+				<li><a href="{% url 'user_center_order' %}" class="active">· 全部订单</a></li>
+				<li><a href="{% url 'addr' %}">· 收货地址</a></li>
+			</ul>
+		</div>
+		
+		<div class="right_content clearfix">
+				<h3 class="common_title2">全部订单</h3>
+				{% for i in order_lst %}
+				<ul class="order_list_th w978 clearfix">
+					<li class="col01">{{ i.ctime }}</li>
+					<li class="col02">订单号：{{ i.order_no }}</li>
+					<li class="col02 stress">{{ i.get_is_pay_display }}</li>
+				</ul>
+				
+				<table class="order_list_table w980">
+					<tbody>
+						<tr>
+							<td width="55%">
+									{% for j in order_good %}
+									{% if i.id == j.pid_id %}
+								<ul class="order_goods_list clearfix">					
+									<li class="col01"><img src="{{ MEDIA_URL }}{{ j.img }}"></li>
+									<li class="col02">{{ j.goods_name }}<em>{{ j.price }}元/500g</em></li>
+									<li class="col03">{{ j.count }}</li>
+									<li class="col04">{{ j.total }}元</li>
+								</ul>
+								{% endif %}
+								{% endfor %}
+							</td>
+							{% if i.is_pay == 0 %}
+							<td width="15%">{{ i.allmoney }}元</td>
+							<td width="15%">待付款</td>
+							<td width="15%"><a href="#" class="oper_btn">去付款</a></td>
+							{% else %}
+							<td width="15%">{{ i.allmoney }}元</td>
+							<td width="15%">已付款</td>
+							<td width="15%"><a href="#" class="oper_btn">查看物流</a></td>
+							{% endif %}
+						</tr>
+					</tbody>
+				</table>
+
+			{% endfor %}
+
+				<div class="pagenation">
+					<a href="#"><上一页</a>
+					<a href="#" class="active">1</a>
+					<a href="#">2</a>
+					<a href="#">3</a>
+					<a href="#">4</a>
+					<a href="#">5</a>
+					<a href="#">下一页></a>
+				</div>
+		</div>
+	</div>
+{% endblock %}
+
+	
